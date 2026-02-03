@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useCart } from '@/contexts/CartContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -44,6 +45,7 @@ interface VenueDetailsResponse {
 export const VenueDetailsPage = () => {
   const { venueId } = useParams<{ venueId: string }>();
   const navigate = useNavigate();
+  const { addToCart } = useCart();
   const [venue, setVenue] = useState<Venue | null>(null);
   const [bottles, setBottles] = useState<Bottle[]>([]);
   const [loading, setLoading] = useState(true);
@@ -107,6 +109,10 @@ export const VenueDetailsPage = () => {
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
+  };
+
+  const handleProductClick = (bottleId: string) => {
+    navigate(`/venue/${venueId}/product/${bottleId}`);
   };
 
   if (loading && !venue) {
@@ -204,9 +210,20 @@ export const VenueDetailsPage = () => {
         ) : (
           <div className="grid grid-cols-3 gap-3">
             {bottles.map((bottle) => (
-              <div key={bottle._id} className="relative bg-gray-50 rounded-lg overflow-hidden">
+              <div 
+                key={bottle._id} 
+                className="relative bg-gray-50 rounded-lg overflow-hidden cursor-pointer"
+                onClick={() => handleProductClick(bottle._id)}
+              >
                 {/* Heart Icon */}
-                <button className="absolute top-2 right-2 z-10 w-6 h-6 bg-white rounded-full flex items-center justify-center shadow-sm">
+                <button 
+                  className="absolute top-2 right-2 z-10 w-6 h-6 bg-white rounded-full flex items-center justify-center shadow-sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    // Add to favorites logic here
+                    console.log('Added to favorites:', bottle);
+                  }}
+                >
                   <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 000-6.364 4.5 4.5 0 00-6.364 0L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                   </svg>
@@ -214,10 +231,13 @@ export const VenueDetailsPage = () => {
 
                 <div className="p-2">
                   {/* Product Image */}
-                  <div className="aspect-square bg-gray-50 rounded-lg mb-2 flex items-center justify-center relative">
-                    <div className="text-3xl">
-                      🍷
-                    </div>
+                  <div className="aspect-square bg-gray-50 rounded-lg mb-2 flex items-center justify-center relative overflow-hidden">
+                    <img 
+                      src={`https://picsum.photos/400/400?random=${bottle._id}`}
+                      alt={`${bottle.brand} ${bottle.name}`}
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                    />
                     {/* Discount Badge */}
                     {Math.random() > 0.7 && (
                       <div className="absolute top-1 left-1 bg-red-500 text-white text-xs px-1 py-0.5 rounded text-[10px] font-medium">
@@ -229,6 +249,18 @@ export const VenueDetailsPage = () => {
                     <Button 
                       size="sm" 
                       disabled={!bottle.isAvailable}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        addToCart({
+                          _id: bottle._id,
+                          name: bottle.name,
+                          brand: bottle.brand,
+                          price: bottle.price,
+                          volume: bottle.volume,
+                          venueId: venue?._id || '',
+                          venueName: venue?.name || ''
+                        });
+                      }}
                       className="absolute bottom-1 right-1 bg-green-600 hover:bg-green-700 text-white px-3 py-1 text-xs font-medium rounded-md border border-green-600 h-6 shadow-sm"
                     >
                       ADD
@@ -236,7 +268,7 @@ export const VenueDetailsPage = () => {
                   </div>
 
                   {/* Product Info */}
-                  <div className="space-y-1">
+                  <div className="space-y-0.5">
                     {/* Volume and Type */}
                     <div className="flex items-center space-x-1 text-[10px]">
                       <div className="flex items-center space-x-1">
@@ -248,12 +280,12 @@ export const VenueDetailsPage = () => {
                     </div>
 
                     {/* Product Name */}
-                    <h3 className="text-xs font-medium text-gray-900 leading-tight line-clamp-2 min-h-[2.5rem]">
+                    <h3 className="text-xs font-medium text-gray-900 leading-tight line-clamp-2 mb-1">
                       {bottle.brand} {bottle.name}
                     </h3>
 
                     {/* Rating */}
-                    <div className="flex items-center space-x-1">
+                    <div className="flex items-center space-x-1 mb-1">
                       <div className="flex items-center">
                         {[1, 2, 3, 4].map((star) => (
                           <svg key={star} className="w-2.5 h-2.5 text-yellow-400 fill-current" viewBox="0 0 20 20">
@@ -268,7 +300,7 @@ export const VenueDetailsPage = () => {
                     </div>
 
                     {/* Delivery Time */}
-                    <div className="flex items-center space-x-1 text-[10px] text-gray-500">
+                    <div className="flex items-center space-x-1 text-[10px] text-gray-500 mb-1">
                       <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
@@ -276,7 +308,7 @@ export const VenueDetailsPage = () => {
                     </div>
 
                     {/* Price */}
-                    <div className="pt-1">
+                    <div>
                       <div className="text-xs font-bold text-gray-900">
                         ₹{bottle.price.toLocaleString()}
                       </div>

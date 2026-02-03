@@ -6,17 +6,13 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'sonner';
 import { 
   Search, 
   MapPin, 
   ChevronDown, 
-  Home, 
-  Crown, 
-  CreditCard, 
-  Users,
   Star,
-  ArrowRight
+  ArrowRight,
+  Crown
 } from 'lucide-react';
 
 interface Venue {
@@ -27,7 +23,7 @@ interface Venue {
 }
 
 export const HomePage = () => {
-  const { customer, logout } = useAuth();
+  const { customer } = useAuth();
   const navigate = useNavigate();
   const [venues, setVenues] = useState<Venue[]>([]);
   const [loading, setLoading] = useState(true);
@@ -50,12 +46,6 @@ export const HomePage = () => {
 
     fetchVenues();
   }, []);
-
-  const handleLogout = () => {
-    logout();
-    toast.success('Logged out successfully');
-    navigate('/auth');
-  };
 
   const handleVenueClick = (venueId: string) => {
     navigate(`/venue/${venueId}`);
@@ -242,22 +232,13 @@ export const HomePage = () => {
                   className="min-w-[280px] h-[280px] relative rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-105 cursor-pointer"
                   onClick={() => handleVenueClick(venue._id)}
                 >
-                  {/* Background Image */}
-                  <div 
-                    className={`absolute inset-0 bg-gradient-to-br ${
-                      index % 4 === 0 ? 'from-orange-400 via-red-500 to-pink-600' :
-                      index % 4 === 1 ? 'from-blue-500 via-purple-600 to-indigo-700' :
-                      index % 4 === 2 ? 'from-green-400 via-teal-500 to-cyan-600' :
-                      'from-yellow-400 via-orange-500 to-red-600'
-                    }`}
-                  >
-                    {/* Venue Image Placeholder */}
-                    <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
-                      <div className="text-white text-6xl font-bold opacity-20">
-                        {venue.name.charAt(0)}
-                      </div>
-                    </div>
-                  </div>
+                  {/* Background Image using Picsum API */}
+                  <img 
+                    src={`https://picsum.photos/400/400?random=${venue._id}`}
+                    alt={venue.name}
+                    className="absolute inset-0 w-full h-full object-cover"
+                    loading="lazy"
+                  />
 
                   {/* Dark Gradient Overlay for Text */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
@@ -302,83 +283,6 @@ export const HomePage = () => {
               ))}
             </div>
           )}
-        </div>
-      </div>
-
-      {/* Bottom Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200">
-        {/* Elevated My Bottle Button */}
-        <div className="absolute -top-8 left-1/2 transform -translate-x-1/2">
-          <div className="w-20 h-20 bg-red-500 rounded-full flex items-center justify-center shadow-xl border-4 border-white">
-            {/* Wine Bottle SVG Icon */}
-            <svg 
-              width="32" 
-              height="42" 
-              viewBox="0 0 20 28" 
-              fill="none" 
-              className="text-white"
-            >
-              {/* Wine bottle body */}
-              <path 
-                d="M6 8C6 7.5 6.5 7 7 7H13C13.5 7 14 7.5 14 8V26C14 26.5 13.5 27 13 27H7C6.5 27 6 26.5 6 26V8Z" 
-                fill="currentColor"
-              />
-              {/* Wine bottle neck */}
-              <path 
-                d="M8.5 1C8.5 0.5 9 0 9.5 0H10.5C11 0 11.5 0.5 11.5 1V7H8.5V1Z" 
-                fill="currentColor"
-              />
-              {/* Wine bottle shoulder */}
-              <path 
-                d="M6 8C6 7.5 6.5 7 7 7H8.5V7H11.5V7H13C13.5 7 14 7.5 14 8V12C14 12 12 10 10 10C8 10 6 12 6 12V8Z" 
-                fill="currentColor"
-              />
-              {/* Bottle highlight */}
-              <path 
-                d="M7.5 9H8.5V24H7.5V9Z" 
-                fill="currentColor" 
-                opacity="0.4"
-              />
-              {/* Cork/cap */}
-              <rect 
-                x="8.5" 
-                y="0" 
-                width="3" 
-                height="1.5" 
-                fill="currentColor" 
-                opacity="0.8"
-              />
-            </svg>
-          </div>
-        </div>
-        
-        {/* Navigation Items */}
-        <div className="flex items-center justify-around px-4 py-3">
-          <button className="flex flex-col items-center py-2 px-3">
-            <Home className="w-5 h-5 text-orange-500 mb-1" />
-            <span className="text-xs text-orange-500 font-medium">HOME</span>
-          </button>
-          
-          <button className="flex flex-col items-center py-2 px-3">
-            <Crown className="w-5 h-5 text-gray-400 mb-1" />
-            <span className="text-xs text-gray-400">PRIME</span>
-          </button>
-          
-          {/* Empty space for elevated button */}
-          <div className="w-12"></div>
-          
-          <button className="flex flex-col items-center py-2 px-3">
-            <CreditCard className="w-5 h-5 text-gray-400 mb-1" />
-            <span className="text-xs text-gray-400">CARD</span>
-          </button>
-          
-          <button 
-            onClick={handleLogout}
-            className="flex flex-col items-center py-2 px-3"
-          >
-            <Users className="w-5 h-5 text-gray-400 mb-1" />
-            <span className="text-xs text-gray-400">PROFILE</span>
-          </button>
         </div>
       </div>
     </div>
