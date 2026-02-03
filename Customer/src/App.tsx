@@ -1,12 +1,56 @@
-import { Button } from "@/components/ui/button"
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from '@/contexts/AuthContext';
+import { ProtectedRoute } from '@/components/ProtectedRoute';
+import { PublicRoute } from '@/components/PublicRoute';
+import { HomePage } from '@/pages/HomePage';
+import { AuthPage } from '@/pages/AuthPage';
+import { VenueDetailsPage } from '@/pages/VenueDetailsPage';
+import { Toaster } from '@/components/ui/sonner';
 
 function App() {
   return (
-    <div className="flex min-h-svh flex-col items-center justify-center">
-      <h1 className="text-4xl font-bold mb-8">Customer App</h1>
-      <Button>Click me</Button>
-    </div>
-  )
+    <AuthProvider>
+      <Router>
+        <div className="App">
+          <Routes>
+            <Route 
+              path="/auth" 
+              element={
+                <PublicRoute>
+                  <AuthPage />
+                </PublicRoute>
+              } 
+            />
+            <Route 
+              path="/login" 
+              element={
+                <PublicRoute>
+                  <Navigate to="/auth" replace />
+                </PublicRoute>
+              } 
+            />
+            <Route 
+              path="/" 
+              element={
+                <ProtectedRoute>
+                  <HomePage />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/venue/:venueId" 
+              element={
+                <ProtectedRoute>
+                  <VenueDetailsPage />
+                </ProtectedRoute>
+              } 
+            />
+          </Routes>
+          <Toaster />
+        </div>
+      </Router>
+    </AuthProvider>
+  );
 }
 
-export default App
+export default App;
