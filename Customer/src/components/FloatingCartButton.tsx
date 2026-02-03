@@ -1,11 +1,25 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useCart } from '@/contexts/CartContext';
 import { ShoppingCart } from 'lucide-react';
 
 export const FloatingCartButton: React.FC = () => {
   const { totalItems, totalPrice } = useCart();
+  const navigate = useNavigate();
+  const location = useLocation();
   const [isExpanded, setIsExpanded] = useState(false);
   const [showAnimation, setShowAnimation] = useState(false);
+
+  // Check if we're on product details page
+  const isProductDetailsPage = location.pathname.includes('/product/');
+  
+  // Dynamic bottom position with smooth transition
+  const getBottomPosition = () => {
+    if (isProductDetailsPage) {
+      return 'bottom-32'; // Higher position for product details
+    }
+    return 'bottom-12'; // Normal position
+  };
 
   useEffect(() => {
     if (totalItems > 0) {
@@ -19,20 +33,19 @@ export const FloatingCartButton: React.FC = () => {
   }, [totalItems]);
 
   const handleBottleClick = () => {
-    // Placeholder for future "My Bottle" feature
-    console.log('My Bottle clicked - feature coming soon!');
+    // Navigate to My Bottles page
+    navigate('/my-bottles');
   };
 
   const handleCartClick = () => {
-    // Open cart functionality
-    console.log('Cart clicked - opening cart with', totalItems, 'items');
-    // TODO: Navigate to cart page or open cart modal
+    // Navigate to cart page
+    navigate('/cart');
   };
 
   if (!showAnimation && totalItems === 0) {
     return (
-      // Original wine bottle button - elevated above navbar
-      <div className="fixed bottom-12 left-1/2 transform -translate-x-1/2 z-40">
+      // Original wine bottle button with animated positioning
+      <div className={`fixed ${getBottomPosition()} left-1/2 transform -translate-x-1/2 z-40 transition-all duration-500 ease-in-out`}>
         <button 
           onClick={handleBottleClick}
           className="w-20 h-20 bg-red-500 rounded-full flex items-center justify-center shadow-xl border-4 border-white hover:bg-red-600 transition-colors"
@@ -82,7 +95,7 @@ export const FloatingCartButton: React.FC = () => {
   }
 
   return (
-    <div className="fixed bottom-12 left-1/2 transform -translate-x-1/2 z-40">
+    <div className={`fixed ${getBottomPosition()} left-1/2 transform -translate-x-1/2 z-40 transition-all duration-500 ease-in-out`}>
       <div 
         className={`bg-red-500 rounded-full flex items-center justify-center shadow-xl border-4 border-white transition-all duration-500 ease-in-out ${
           isExpanded 

@@ -129,8 +129,20 @@ export const VenueDetailsPage = () => {
   return (
     <div className="min-h-screen bg-white pb-20">
       {/* Header */}
-      <div className="bg-gradient-to-br from-purple-900 via-purple-800 to-pink-800 text-white rounded-b-3xl">
-        <div className="px-4 pt-12 pb-6">
+      <div className="text-white rounded-b-3xl relative overflow-hidden">
+        {/* Background Image */}
+        <img 
+          src={`https://picsum.photos/600/400?random=${venueId}`}
+          alt={venue?.name}
+          className="absolute inset-0 w-full h-full object-cover"
+          loading="lazy"
+        />
+        
+        {/* Dark Overlay for Text Readability */}
+        <div className="absolute inset-0 bg-black/40"></div>
+        
+        {/* Content */}
+        <div className="relative z-10 px-4 pt-12 pb-6">
           {/* Top Bar */}
           <div className="flex items-center justify-between mb-6">
             <Button 

@@ -7,6 +7,8 @@ import { HomePage } from '@/pages/HomePage';
 import { AuthPage } from '@/pages/AuthPage';
 import { VenueDetailsPage } from '@/pages/VenueDetailsPage';
 import { ProductDetailsPage } from '@/pages/ProductDetailsPage';
+import { CartPage } from '@/pages/CartPage';
+import { MyBottlesPage } from '@/pages/MyBottlesPage';
 import { FloatingCartButton } from '@/components/FloatingCartButton';
 import { BottomNavigation } from '@/components/BottomNavigation';
 import { Toaster } from '@/components/ui/sonner';
@@ -61,6 +63,22 @@ function App() {
                     <ProductDetailsPage />
                     <FloatingCartButton />
                     <BottomNavigation />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/cart" 
+                element={
+                  <ProtectedRoute>
+                    <CartPage />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/my-bottles" 
+                element={
+                  <ProtectedRoute>
+                    <MyBottlesPage />
                   </ProtectedRoute>
                 } 
               />

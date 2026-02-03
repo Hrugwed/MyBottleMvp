@@ -14,7 +14,6 @@ export const BottomNavigation: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { logout } = useAuth();
-  const { totalItems } = useCart();
 
   const handleLogout = () => {
     logout();
@@ -26,15 +25,10 @@ export const BottomNavigation: React.FC = () => {
     return location.pathname === path;
   };
 
-  // Determine if cart is expanded to adjust spacing
-  const isCartExpanded = totalItems > 0;
-
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-30">
       {/* Navigation Items */}
-      <div className={`flex items-center justify-around px-4 py-3 transition-all duration-500 ease-in-out ${
-        isCartExpanded ? 'transform -translate-y-2' : ''
-      }`}>
+      <div className="flex items-center justify-around px-4 py-3">
         <button 
           onClick={() => navigate('/')}
           className="flex flex-col items-center py-2 px-3"
@@ -50,10 +44,8 @@ export const BottomNavigation: React.FC = () => {
           <span className="text-xs text-gray-400">PRIME</span>
         </button>
         
-        {/* Dynamic space for floating cart button */}
-        <div className={`transition-all duration-500 ease-in-out ${
-          isCartExpanded ? 'w-20' : 'w-12'
-        }`}></div>
+        {/* Fixed space for floating cart button */}
+        <div className="w-12"></div>
         
         <button className="flex flex-col items-center py-2 px-3">
           <CreditCard className="w-5 h-5 text-gray-400 mb-1" />

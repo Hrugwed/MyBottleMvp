@@ -21,6 +21,12 @@ app.use('/api/auth/bartender', require('./routes/bartenderAuth'));
 // Venue Routes
 app.use('/api/venues', require('./routes/venues'));
 
+// Cart Routes
+app.use('/api/cart', require('./routes/cart'));
+
+// Payment Routes
+app.use('/api/payment', require('./routes/payment'));
+
 // Test route
 app.get('/', (req, res) => {
   res.json({ 

@@ -1,6 +1,33 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
+const cartItemSchema = new mongoose.Schema({
+  bottleId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Bottle',
+    required: true
+  },
+  quantity: {
+    type: Number,
+    required: true,
+    default: 1,
+    min: 1
+  },
+  venueId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Venue',
+    required: true
+  },
+  selectedVolume: {
+    type: String,
+    required: false
+  },
+  addedAt: {
+    type: Date,
+    default: Date.now
+  }
+});
+
 const customerSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -19,7 +46,8 @@ const customerSchema = new mongoose.Schema({
     required: true,
     minlength: 6,
     select: false
-  }
+  },
+  cart: [cartItemSchema]
 }, {
   timestamps: true
 });
